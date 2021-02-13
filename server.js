@@ -3,8 +3,7 @@ const app = express();
 const port = 3000;
 
 app.get("/", (req, res) => {
-	// res.sendFile(`${__dirname}/index.html`);
-	res.send("こんちには");
+	res.sendFile(`${__dirname}/public/views/index.html`);
 	console.log("/ へアクセスがありました");
 });
 
