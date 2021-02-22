@@ -1,3 +1,12 @@
-.header h1{
-	color: red;
+.body {
+	height: 1200px;
+	background-image: url("/images/COFFEE0I9A8933_TP_V.jpg");
+	background-color: rgba(255, 255, 255, 0.8);
+	background-blend-mode: lighten;
+}
+
+.headerTitle{
+	font-size: 70px;
+	color: white;
+	text-align: center;
 }
