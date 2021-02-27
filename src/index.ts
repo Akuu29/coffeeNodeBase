@@ -1,4 +1,6 @@
 import express from "express";
+import session from "express-session";
+import bodyParser from "body-parser";
 import { resolveSoa } from "dns";
 
 require("dotenv").config();
@@ -6,6 +8,27 @@ require("dotenv").config();
 const mysql = require("mysql");
 const app: express.Express = express();
 const port = 3000;
+
+// DB接続
+const con = mysql.createConnection({
+	host: "localhost",
+	user: "root",
+	password: process.env.DB_PASSWORD
+});
+
+con.connect(function(err: any) {
+	if(err) throw err;
+	console.log("Connected");
+})
+
+// // セッションにユーザ名がなければログインページにリダイレクト
+// app.use((req, res, next) => {
+// 	if(req.session.username) {
+// 		next();
+// 	} else {
+// 		res.redirect("/login");
+// 	}
+// });
 
 // // COURSの許可
 // app.use((req, res, next) => {
@@ -27,18 +50,11 @@ app.get("/", (req, res) => {
 	// console.log("/ へアクセスがありました");
 });
 
+app.get("/login", (req, res) => {
+	res.render("login", {});
+})
+
 app.listen(port, () => {
 	console.log(`listening at http://localhost:${port}`);
 });
 
-// DB接続
-const con = mysql.createConnection({
-	host: "localhost",
-	user: "root",
-	password: process.env.DB_PASSWORD
-});
-
-con.connect(function(err: any) {
-	if(err) throw err;
-	console.log("Connected");
-})
