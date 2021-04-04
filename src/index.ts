@@ -11,7 +11,8 @@ const port = 3000;
 const con = mysql.createConnection({
 	host: "localhost",
 	user: "root",
-	password: process.env.DB_PASSWORD
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME
 });
 
 con.connect(function(err: any) {
@@ -50,10 +51,6 @@ app.get("/", (req, res) => {
 	// console.log("/ へアクセスがありました");
 });
 
-// signup
-app.get("/signup", (req, res) => {
-	res.render("signup", {});
-});
 
 // login
 app.get("/login", (req, res) => {
@@ -64,35 +61,49 @@ app.get("/login", (req, res) => {
 app.post("/login", (req,res) => {
 	console.log(req.body.nickname);
 	console.log(req.body.password);
-	// DBヘ登録
-	const nickname = req.body.nickname;
-	const password = req.body.password;
+	
+	let loginNickname: string = req.body.nickname;
+	let loginPassword: string = req.body.password;
 
-	const sql = "INSERT INTO USER_INFO ";
+	let selectUsersinfo: string = "SELECT NICKNAME, PASSWORD FROM USER_INFO WHERE NICKNAME = ? AND PASSWORD = ?";
 
-	con.query('INSERT INTO ', {}, function(error: any, responce: any) {
+	con.query(selectUsersinfo, {}, function(error: any, responce: any) {
 
 	})
 });
 
-// app.post("/login", (req, res) => {
-// 	const nickname = req.body.nickname;
-// 	const password = req.body.password;
-// 	if(nickname == "admin" && password == "password") {
-// 		req.session.regenerate((err) => {
-// 			req.session.nickname = "admin";
-// 			res.redirect("/");
-// 		})
-// 	}else{
-// 		res.redirect("/");
-// 	}
-// });
+// signup
+app.get("/signup", (req, res) => {
+	res.render("signup", {});
+});
 
-// app.get("/logout", (req, res) => {
-// 	req.session.destroy((err) => {
-// 		res.redirect("/");
-// 	})
-// })
+app.post("/signup", (req, res) => {
+	console.log(req.body.nickname);
+	console.log(req.body.mailaddress);
+	console.log(req.body.password);
+
+	let signupNickname: string = req.body.nickname;
+	let signupMailaddress: string = req.body.mailaddress;
+	let signupPassword: string = req.body.password;
+	let signupConfirm: string = req.body.confirm;
+
+	// password欄confirm欄入力チェック 一致したら登録
+	if(signupPassword == signupConfirm) {
+		let insertUsers: string = "INSERT INTO USERS SET ?";
+		let post: any = {"nickname": signupNickname, "mail_address": signupMailaddress, "password": signupPassword};
+
+		con.query(insertUsers, post, function(error: any, responce: any) {
+			if(error) throw error;
+			res.render("index", {});
+		});
+
+	}else{
+		// エラーメッセージ
+	}
+
+});
+
+
 
 app.listen(port, () => {
 	console.log(`listening at http://localhost:${port}`);
