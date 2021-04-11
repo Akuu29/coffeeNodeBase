@@ -18,7 +18,7 @@ const con = mysql.createConnection({
 con.connect(function(err: any) {
 	if(err) throw err;
 	console.log("Connected");
-})
+});
 
 // // セッションにニックネームがなければログインページにリダイレクト
 // app.use((req, res, next) => {
@@ -59,17 +59,27 @@ app.get("/login", (req, res) => {
 
 // app.use(express.urlencoded ({express:false}));
 app.post("/login", (req,res) => {
-	console.log(req.body.nickname);
-	console.log(req.body.password);
+	// console.log(req.body.nickname);
+	// console.log(req.body.password);
 	
 	let loginNickname: string = req.body.nickname;
 	let loginPassword: string = req.body.password;
 
-	let selectUsersinfo: string = "SELECT NICKNAME, PASSWORD FROM USER_INFO WHERE NICKNAME = ? AND PASSWORD = ?";
+	let selectUsers: string = "SELECT NICKNAME, PASSWORD FROM USERS WHERE NICKNAME = ? AND PASSWORD = ?";
+	let usersInfo: any = [loginNickname, loginPassword];
 
-	con.query(selectUsersinfo, {}, function(error: any, responce: any) {
-
-	})
+	// con.query(selectUsers, loginNickname, loginPassword, function(error: any, responce: any) {
+		con.query(selectUsers, usersInfo, function(error: any, results: any, fields: any) {
+		if(error) throw error;
+		// console.log(results);
+		if(results != "") {
+			res.render("index", {});
+		}else{
+			// ユーザ情報が存在しません。
+			
+		}
+		
+	});
 });
 
 // signup
@@ -78,10 +88,6 @@ app.get("/signup", (req, res) => {
 });
 
 app.post("/signup", (req, res) => {
-	console.log(req.body.nickname);
-	console.log(req.body.mailaddress);
-	console.log(req.body.password);
-
 	let signupNickname: string = req.body.nickname;
 	let signupMailaddress: string = req.body.mailaddress;
 	let signupPassword: string = req.body.password;
@@ -92,13 +98,14 @@ app.post("/signup", (req, res) => {
 		let insertUsers: string = "INSERT INTO USERS SET ?";
 		let post: any = {"nickname": signupNickname, "mail_address": signupMailaddress, "password": signupPassword};
 
-		con.query(insertUsers, post, function(error: any, responce: any) {
+		con.query(insertUsers, post, function(error: any, results: any, fields: any) {
 			if(error) throw error;
+			console.log(results);
 			res.render("index", {});
 		});
 
 	}else{
-		// エラーメッセージ
+		;
 	}
 
 });
