@@ -1,11 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
+import expressSession from "express-session";
 
 require("dotenv").config();
 
 const mysql = require("mysql");
 const app: express.Express = express();
 const port = 3000;
+
+const MySQL = require("express-mysql-session")(expressSession);
 
 // DB接続
 const con = mysql.createConnection({
@@ -37,6 +40,13 @@ con.connect(function(err: any) {
 // })
 
 app.use(bodyParser.urlencoded({extended: false}));
+
+app.use(expressSession({
+	secret: "secretSecretSecret",
+	resave: false,
+	saveUninitialized: true,
+	cookie: {maxAge: 10 * 1000}
+}))
 
 // View Engineにejsを指定
 app.set("view engine", "ejs");
