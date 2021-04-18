@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import expressSession from "express-session";
+import session from "express-session";
 
 require("dotenv").config();
 
@@ -8,9 +8,9 @@ const mysql = require("mysql");
 const app: express.Express = express();
 const port = 3000;
 
-const MySQL = require("express-mysql-session")(expressSession);
+const MySQLStore = require("express-mysql-session")(session);
 
-// DB接続
+// DB情報
 const con = mysql.createConnection({
 	host: "localhost",
 	user: "root",
@@ -18,35 +18,38 @@ const con = mysql.createConnection({
 	database: process.env.DB_NAME
 });
 
+const sessOption = {
+	host: "localhost",
+	user: "root",
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_NAME
+}
+
+const sessionStore = new MySQLStore(sessOption);
+
 con.connect(function(err: any) {
 	if(err) throw err;
 	console.log("Connected");
 });
 
-// // セッションにニックネームがなければログインページにリダイレクト
-// app.use((req, res, next) => {
-// 	if(req.session.nickname) {
-// 		next();
-// 	} else {
-// 		res.redirect("/login");
-// 	}
-// });
-
-// // COURSの許可
-// app.use((req, res, next) => {
-// 	res.header("Access-Control-Arrow-Origin", "*");
-// 	res.header("Access-Control-Arrow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
-// 	next();
-// })
-
-app.use(bodyParser.urlencoded({extended: false}));
-
-app.use(expressSession({
+// セッション生成
+const sess = {
 	secret: "secretSecretSecret",
 	resave: false,
 	saveUninitialized: true,
-	cookie: {maxAge: 10 * 1000}
-}))
+	cookie: {maxAge: 10 * 1000},
+	// cookie: {},
+	store: sessionStore
+};
+
+if(app.get("env") == "production") {
+	app.set("trust proxy", 1)
+	// sess.cookie.secure = true
+}
+
+app.use(session(sess));
+
+app.use(bodyParser.urlencoded({extended: false}));
 
 // View Engineにejsを指定
 app.set("view engine", "ejs");
@@ -58,20 +61,14 @@ app.use(express.static("public"));
 app.get("/", (req, res) => {
 	// res.sendFile(`${__dirname}/views/index.ejs`);
 	res.render("index", {});
-	// console.log("/ へアクセスがありました");
 });
 
-
-// login
 app.get("/login", (req, res) => {
 	res.render("login", {});
 });
 
-// app.use(express.urlencoded ({express:false}));
-app.post("/login", (req,res) => {
-	// console.log(req.body.nickname);
-	// console.log(req.body.password);
-	
+// ログイン
+app.post("/login", (req: any,res: any) => {
 	let loginNickname: string = req.body.nickname;
 	let loginPassword: string = req.body.password;
 
@@ -79,20 +76,24 @@ app.post("/login", (req,res) => {
 	let usersInfo: any = [loginNickname, loginPassword];
 
 	// con.query(selectUsers, loginNickname, loginPassword, function(error: any, responce: any) {
-		con.query(selectUsers, usersInfo, function(error: any, results: any, fields: any) {
+	con.query(selectUsers, usersInfo, function(error: any, results: any, fields: any) {
 		if(error) throw error;
 		// console.log(results);
 		if(results != "") {
-			res.render("index", {});
+			req.session.regenerate((err: any) => {
+				req.session.nickname = loginNickname; // セッション生成
+				res.render("index", {});
+			});
+			
 		}else{
-			// ユーザ情報が存在しません。
+			// ユーザネームまたはパスワードが間違っています。
 			
 		}
 		
 	});
 });
 
-// signup
+// サインアップ
 app.get("/signup", (req, res) => {
 	res.render("signup", {});
 });
