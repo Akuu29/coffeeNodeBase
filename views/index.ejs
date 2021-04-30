@@ -6,15 +6,28 @@
 	<link rel="stylesheet" href="/stylesheets/top.css">
 	<title>coffeeNodeBase</title>
 </head>
+<script type="text/javascript">
+	// let nickname = "";
+</script>
 <body>
 	<div class="main_header">
-			<!-- <h1>Coffee Stand</h1> -->
-			<div class="header_title">
-				Coffee Stand
-			</div>
-			<div class="loginBtn">
+		<div class="header_title">
+			Coffee Stand
+		</div>
+		<div class="btn_area">
+			<div class="btn_login">
 				<a href="./login">Login</a>
 			</div>
+			<div class="btn_logout">
+				<a href="./logout">Logout</a>
+			</div>
+			<div class="btn_post">
+				<a href="./post">Post</a>
+			</div>
+			<div class="btn_mypage">
+				<a href="./mypage"><%= nickname %></a>
+			</div>
+		</div>
 	</div>
 
 	<div class="main_body">
