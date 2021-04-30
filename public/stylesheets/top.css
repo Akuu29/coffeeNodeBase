@@ -1,3 +1,14 @@
+/** 共通 **/
+a {
+	color: black;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+/********/
+
 .main_header {
 	height: 300px;
 	/* display: flex;
@@ -9,6 +20,7 @@
 }
 
 .header_title {
+	font-family: "Comic Sans MS";
 	font-size: 70px;
 	color: black;
 	text-align: center;
@@ -16,7 +28,38 @@
 }
 
 .btn_area {
-	color: black;
+	font-family: "Comic Sans MS";
+	float: right;
+	margin-right: 20px;
+}
+
+/* .btn_initialize {
+} */
+
+.btn_loggedIn {
+	display: none;
+}
+
+.btn_login {
+	display: inline-block;
+	margin: 15px;
+}
+
+.btn_signup {
+	display: inline-block;
+	margin: 15px;
+}
+
+.btn_logout {
+	display: inline-block;
+}
+
+.btn_post {
+	display: inline-block;
+}
+
+.btn_mypage {
+	display: inline-block;
 }
 
 .main_body {
