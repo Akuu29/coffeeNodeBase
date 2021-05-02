@@ -133,11 +133,6 @@ app.post("/signup", (req: any, res: any) => {
 
 });
 
-// post
-app.get("/post", (req,res) => {
-	res.render("post", {});
-})
-
 app.listen(port, () => {
 	console.log(`listening at http://localhost:${port}`);
 });
