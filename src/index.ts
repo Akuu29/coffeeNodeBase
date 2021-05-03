@@ -133,6 +133,11 @@ app.post("/signup", (req: any, res: any) => {
 
 });
 
+// 投稿
+app.get("/post", (req: any, res: any) => {
+	res.render("post", {nickname: req.session.loginUser.nickname});
+});
+
 app.listen(port, () => {
 	console.log(`listening at http://localhost:${port}`);
 });

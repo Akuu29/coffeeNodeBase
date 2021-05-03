@@ -3,24 +3,27 @@
 		Coffee Stand
 	</div>
 	<div class="btn_area">
-		<div class="btn_initialize">
-			<div class="btn_login">
-				<a href="./login">Login</a>
+		<% if(headerNickname == "") {%>
+			<div class="btn_initialize">
+				<div class="btn_login">
+					<a href="./login">Login</a>
+				</div>
+				<div class="btn_signup">
+					<a href="./signup">Signup</a>
+				</div>
 			</div>
-			<div class="btn_signup">
-				<a href="./signup">Signup</a>
+		<% }else{ %>
+			<div class="btn_loggedIn">
+				<div class="btn_logout">
+					<a href="./logout">Logout</a>
+				</div>
+				<div class="btn_post">
+					<a href="./post">Post</a>
+				</div>
+				<div class="btn_mypage">
+					<a href="./mypage"><%= headerNickname %></a>
+				</div>
 			</div>
-		</div>
-		<div class="btn_loggedIn">
-			<div class="btn_logout">
-				<a href="./logout">Logout</a>
-			</div>
-			<div class="btn_post">
-				<a href="./post">Post</a>
-			</div>
-			<div class="btn_mypage">
-				<a href="./mypage"><%= nickname %></a>
-			</div>
-		</div>
+		<% } %>
 	</div>
 </div>
