@@ -44,3 +44,4 @@ typings/
 .env
 .next
 /dist
+/assets
